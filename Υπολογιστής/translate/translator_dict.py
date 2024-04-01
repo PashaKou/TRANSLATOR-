@@ -1,4 +1,5 @@
 language_dict = {
+    "auto detect":"auto",
     "english": "en",
     "albanian": "sq",
     "arabic": "ar",
