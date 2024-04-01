@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 from customtkinter import *
 from translator_dict import language_dict
+from langdetect import detect
 
 """
 This is a simple translator in python made in GUI
@@ -15,9 +16,15 @@ def translate_f():
         given_text = entry_for_translate.get()  # get the text for translate
         written_text_lang = from_combobox.get().lower()  # get the language of the written text
         to_translate_lang = to_combobox.get().lower()  # get the language to translate
-        translator = Translator(provider="mymemory", from_lang=language_dict[written_text_lang],
-                                to_lang=language_dict[to_translate_lang])
+        if written_text_lang == "auto detect":
+            written_text_lang = detect(given_text)
+            translator = Translator(provider="mymemory", from_lang=written_text_lang,
+                                    to_lang=language_dict[to_translate_lang])
+        else:
+            translator = Translator(provider="mymemory", from_lang=language_dict[written_text_lang],
+                                    to_lang=language_dict[to_translate_lang])
         translation = translator.translate(given_text)
+        print(translation)
         var_translate.set(translation)
     except Exception as e:
         messagebox.showerror(title="ERROR", message=f"Oops something went wrong!\nFor the programmer:{e}"
@@ -59,7 +66,7 @@ entry_translated.place(x=40, y=290)  # place it in the root
 
 Label(root, text="and I want it to be translated above into", font=("Cambria", 12),
       bg="light yellow").place(x=50, y=360)
-
+language_dict.pop("auto detect")
 to_combobox = CTkComboBox(root, values=[key.title() for key in language_dict.keys()], corner_radius=15)
 to_combobox.place(x=340, y=360)
 # button for the translation command ------------------------------------------------------
